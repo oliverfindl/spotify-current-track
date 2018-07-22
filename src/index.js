@@ -1,5 +1,5 @@
 /**
- * spotify-current-track v1.0.2 (2018-07-22)
+ * spotify-current-track v1.1.0 (2018-07-22)
  * Copyright 2018 Oliver Findl
  * @license MIT
  */
@@ -32,13 +32,14 @@ class SpotifyAPI {
 
 	/**
 	 * Class constructor accepting options object
-	 * @param {object} options
+	 * @param {Object} options Options object
 	 */
 	constructor(options = {}) {
 		this.$options = Object.freeze(Object.assign({}, DEFAULT_OPTIONS, options));
 		this._accessToken = "";
 		this._accessTokenType = "";
 		this._accessTokenExpiration = 0;
+		this._market = "";
 
 		Object.keys(DEFAULT_OPTIONS).forEach(key => {
 			if(!key.startsWith("_") && !this.$options[key]) {
@@ -48,8 +49,8 @@ class SpotifyAPI {
 	}
 
 	/**
-	 * Private getter for obtaining current timestamp in seconds
-	 * @returns {number} Current timestamp in seconds
+	 * Private getter for current timestamp in seconds
+	 * @returns {Number} Current timestamp in seconds
 	 */
 	get _now() {
 		if(this.$options._verbose) console.log("_now");
@@ -92,6 +93,9 @@ class SpotifyAPI {
 		if(this.$options._verbose) console.log("_currentTrack");
 		return new Promise((resolve, reject) => {
 			get("https://api.spotify.com/v1/me/player/currently-playing", {
+				params: {
+					market: this._market || null
+				},
 				headers: {
 					"Accept": "application/json",
 					"Content-Type": "application/json",
@@ -101,7 +105,7 @@ class SpotifyAPI {
 				if(!AXIOS_OK_HTTP_STATUS_CODES.includes(response.status)) reject(new Error(`Wrong HTTP status code! [${response.status}]`));
 				resolve(Object.assign({
 					is_playing: response.status !== 204
-				}, response.data ? response.data : null));
+				}, response.data || null));
 			}).catch(reject);
 		});
 	}
@@ -114,6 +118,24 @@ class SpotifyAPI {
 		if(this.$options._verbose) console.log("currentTrack");
 		if(this._accessToken && this._accessTokenType && this._accessTokenExpiration && this._accessTokenExpiration > this._now) return this._currentTrack;
 		return new Promise((resolve, reject) => this._newAccessToken.then(() => resolve(this._currentTrack)).catch(reject));
+	}
+
+	/**
+	 * Getter for current market country code
+	 * @returns {String} An ISO 3166-1 alpha-2 country code
+	 */
+	get market() {
+		return this._market;
+	}
+
+	/**
+	 * Setter for market country code
+	 * @param {String} market An ISO 3166-1 alpha-2 country code
+	 * @returns {String} An ISO 3166-1 alpha-2 country code
+	 */
+	set market(market = "") {
+		if(!market || !/^[a-z]{2}$/i.test(market)) return;
+		return this._market = market.toUpperCase();
 	}
 
 }

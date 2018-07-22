@@ -34,15 +34,20 @@ const spotify = new SpotifyAPI({
 	refreshToken: "<REFRESH_TOKEN>"
 });
 
+// [optional] set market
+spotify.market = "SK";
+
 // get current track
 spotify.currentTrack.then(track => {
 	// ...
 }).catch(console.error);
 ```
 
-`clientId` and `clientSecret` can be obtained from your own [Spotify](https://www.spotify.com/) application [[more info](https://developer.spotify.com/documentation/general/guides/app-settings/)].
+`clientId` and `clientSecret` can be obtained from your own [Spotify App](https://developer.spotify.com/documentation/general/guides/app-settings/).
 
-`refreshToken` can be obtained with [Authorization Code Flow](https://developer.spotify.com/documentation/general/guides/authorization-guide/#authorization-code-flow) [[more info](https://developer.spotify.com/documentation/web-api/quick-start/)].
+`refreshToken` can be obtained with [Authorization Code Flow](https://developer.spotify.com/documentation/general/guides/authorization-guide/#authorization-code-flow).
+
+Set `market` if you want to apply [Track Relinking](https://developer.spotify.com/documentation/general/guides/track-relinking-guide/).
 
 Example `track` object can be found [here](https://developer.spotify.com/documentation/web-api/reference/player/get-the-users-currently-playing-track/).
 
