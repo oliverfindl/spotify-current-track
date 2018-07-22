@@ -1,5 +1,5 @@
 /**
- * spotify-current-track v1.0.1 (2018-07-22)
+ * spotify-current-track v1.0.2 (2018-07-22)
  * Copyright 2018 Oliver Findl
  * @license MIT
  */
@@ -32,11 +32,12 @@ class SpotifyAPI {
 
 	/**
 	 * Class constructor accepting options object
-	 * @param {object} options 
+	 * @param {object} options
 	 */
 	constructor(options = {}) {
 		this.$options = Object.freeze(Object.assign({}, DEFAULT_OPTIONS, options));
 		this._accessToken = "";
+		this._accessTokenType = "";
 		this._accessTokenExpiration = 0;
 
 		Object.keys(DEFAULT_OPTIONS).forEach(key => {
@@ -52,7 +53,7 @@ class SpotifyAPI {
 	 */
 	get _now() {
 		if(this.$options._verbose) console.log("_now");
-		return new Date().getTime() / 1e3;
+		return (new Date().getTime() / 1e3) | 0;
 	}
 
 	/**
@@ -76,7 +77,8 @@ class SpotifyAPI {
 				if(!intersection(response.data.scope.split(/\s+/), REQUIRED_SCOPES).length) reject(new Error(`Missing required scope! [${REQUIRED_SCOPES.join(" and/or ")}]`));
 				resolve({
 					accessToken: this._accessToken = response.data.access_token,
-					accessTokenExpiration: this._accessTokenExpiration = this._now + response.data.expires_in
+					accessTokenType: this._accessTokenType = response.data.token_type,
+					accessTokenExpiration: this._accessTokenExpiration = this._now + response.data.expires_in | 0
 				});
 			}).catch(reject);
 		});
@@ -93,7 +95,7 @@ class SpotifyAPI {
 				headers: {
 					"Accept": "application/json",
 					"Content-Type": "application/json",
-					"Authorization": "Bearer " + this._accessToken
+					"Authorization": this._accessTokenType + " " + this._accessToken
 				}
 			}).then(response => {
 				if(!AXIOS_OK_HTTP_STATUS_CODES.includes(response.status)) reject(new Error(`Wrong HTTP status code! [${response.status}]`));
@@ -110,7 +112,7 @@ class SpotifyAPI {
 	 */
 	get currentTrack() {
 		if(this.$options._verbose) console.log("currentTrack");
-		if(this._accessToken && this._accessTokenExpiration > this._now) return this._currentTrack;
+		if(this._accessToken && this._accessTokenType && this._accessTokenExpiration && this._accessTokenExpiration > this._now) return this._currentTrack;
 		return new Promise((resolve, reject) => this._newAccessToken.then(() => resolve(this._currentTrack)).catch(reject));
 	}
 
