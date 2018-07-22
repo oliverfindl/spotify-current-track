@@ -1,5 +1,5 @@
 /**
- * spotify-current-track v1.0.0 (2018-07-21)
+ * spotify-current-track v1.0.1 (2018-07-22)
  * Copyright 2018 Oliver Findl
  * @license MIT
  */
@@ -47,7 +47,7 @@ class SpotifyAPI {
 	}
 
 	/**
-	 * Private method for obtaining current timestamp in seconds
+	 * Private getter for obtaining current timestamp in seconds
 	 * @returns {number} Current timestamp in seconds
 	 */
 	get _now() {
@@ -56,11 +56,11 @@ class SpotifyAPI {
 	}
 
 	/**
-	 * Private method for obtaining access token
-	 * @return {Promise} Promise object containing access token and expiration timestamp of token in seconds
+	 * Private getter for obtaining new access token
+	 * @return {Promise} Promise object containing refresh token, access token and expiration timestamp of access token in seconds
 	 */
-	get _refresh() {
-		if(this.$options._verbose) console.log("_refresh");
+	get _newAccessToken() {
+		if(this.$options._verbose) console.log("_newAccessToken");
 		return new Promise((resolve, reject) => {
 			post("https://accounts.spotify.com/api/token", stringify({
 				grant_type: "refresh_token",
@@ -83,7 +83,7 @@ class SpotifyAPI {
 	}
 
 	/**
-	 * Private method for obtaining current track object (only with valid access token)
+	 * Private getter for obtaining current track object (only with valid access token)
 	 * @return {Promise} Promise object with current track data
 	 */
 	get _currentTrack() {
@@ -105,13 +105,13 @@ class SpotifyAPI {
 	}
 
 	/**
-	 * Method for obtaining current track object
+	 * Getter for obtaining current track object
 	 * @return {Promise} Promise object with current track data
 	 */
 	get currentTrack() {
 		if(this.$options._verbose) console.log("currentTrack");
-		if(this._accessTokenExpiration > this._now) return this._currentTrack;
-		return new Promise((resolve, reject) => this._refresh.then(() => resolve(this._currentTrack)).catch(reject));
+		if(this._accessToken && this._accessTokenExpiration > this._now) return this._currentTrack;
+		return new Promise((resolve, reject) => this._newAccessToken.then(() => resolve(this._currentTrack)).catch(reject));
 	}
 
 }
