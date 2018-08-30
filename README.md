@@ -29,9 +29,12 @@ const SpotifyAPI = require("spotify-current-track");
 
 // init lib
 const spotify = new SpotifyAPI({
+	// [required] fill in your spotify credentials
 	clientId: "<CLIENT_ID>",
 	clientSecret: "<CLIENT_SECRET>",
-	refreshToken: "<REFRESH_TOKEN>"
+	refreshToken: "<REFRESH_TOKEN>",
+	// [optional] override default request timeout, default value is 0 (no timeout)
+	_timeout: 1000 // milliseconds
 });
 
 // [optional] set market
@@ -45,7 +48,7 @@ spotify.currentTrack.then(track => {
 
 `clientId` and `clientSecret` can be obtained from your own [Spotify App](https://developer.spotify.com/documentation/general/guides/app-settings/).
 
-`refreshToken` can be obtained with [Authorization Code Flow](https://developer.spotify.com/documentation/general/guides/authorization-guide/#authorization-code-flow).
+`refreshToken` can be obtained by [Authorization Code Flow](https://developer.spotify.com/documentation/general/guides/authorization-guide/#authorization-code-flow) with `user-read-currently-playing` and/or `user-read-playback-state` scope.
 
 Set `market` if you want to apply [Track Relinking](https://developer.spotify.com/documentation/general/guides/track-relinking-guide/).
 

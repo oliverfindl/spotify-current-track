@@ -1,5 +1,5 @@
 /**
- * spotify-current-track v1.1.0 (2018-07-22)
+ * spotify-current-track v1.2.0 (2018-08-30)
  * Copyright 2018 Oliver Findl
  * @license MIT
  */
@@ -14,6 +14,7 @@ const { stringify } = require("qs");
 /* Define default options object */
 const DEFAULT_OPTIONS = Object.freeze({
 	_verbose: false,
+	_timeout: 0,
 	clientId: "",
 	clientSecret: "",
 	refreshToken: ""
@@ -68,6 +69,7 @@ class SpotifyAPI {
 				grant_type: "refresh_token",
 				refresh_token: this.$options.refreshToken
 			}), {
+				timeout: this.$options._timeout,
 				headers: {
 					"Accept": "application/json",
 					"Content-Type": "application/x-www-form-urlencoded",
@@ -96,6 +98,7 @@ class SpotifyAPI {
 				params: {
 					market: this._market || null
 				},
+				timeout: this.$options._timeout,
 				headers: {
 					"Accept": "application/json",
 					"Content-Type": "application/json",
