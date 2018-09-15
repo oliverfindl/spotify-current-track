@@ -1,7 +1,7 @@
 {
 	"name": "spotify-current-track",
-	"version": "1.2.0",
-	"description": "Simple wrapper for obtaining current track from Spotify Web API.",
+	"version": "1.2.1",
+	"description": "Simple wrapper class for obtaining current track from Spotify Web API.",
 	"main": "src/index.js",
 	"files": [
 		"src/*.js"

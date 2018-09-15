@@ -1,5 +1,5 @@
 /**
- * spotify-current-track v1.2.0 (2018-08-30)
+ * spotify-current-track v1.2.1 (2018-09-15)
  * Copyright 2018 Oliver Findl
  * @license MIT
  */
@@ -37,6 +37,7 @@ class SpotifyAPI {
 	 */
 	constructor(options = {}) {
 		this.$options = Object.freeze(Object.assign({}, DEFAULT_OPTIONS, options));
+
 		this._accessToken = "";
 		this._accessTokenType = "";
 		this._accessTokenExpiration = 0;
@@ -54,7 +55,8 @@ class SpotifyAPI {
 	 * @returns {Number} Current timestamp in seconds
 	 */
 	get _now() {
-		if(this.$options._verbose) console.log("_now");
+		if(this.$options._verbose) console.log("[get]", "_now");
+
 		return (new Date().getTime() / 1e3) | 0;
 	}
 
@@ -63,7 +65,8 @@ class SpotifyAPI {
 	 * @return {Promise} Promise object containing refresh token, access token and expiration timestamp of access token in seconds
 	 */
 	get _newAccessToken() {
-		if(this.$options._verbose) console.log("_newAccessToken");
+		if(this.$options._verbose) console.log("[get]", "_newAccessToken");
+
 		return new Promise((resolve, reject) => {
 			post("https://accounts.spotify.com/api/token", stringify({
 				grant_type: "refresh_token",
@@ -77,7 +80,9 @@ class SpotifyAPI {
 				}
 			}).then(response => {
 				if(!AXIOS_OK_HTTP_STATUS_CODES.includes(response.status)) reject(new Error(`Wrong HTTP status code! [${response.status}]`));
+
 				if(!intersection(response.data.scope.split(/\s+/), REQUIRED_SCOPES).length) reject(new Error(`Missing required scope! [${REQUIRED_SCOPES.join(" and/or ")}]`));
+
 				resolve({
 					accessToken: this._accessToken = response.data.access_token,
 					accessTokenType: this._accessTokenType = response.data.token_type,
@@ -92,7 +97,8 @@ class SpotifyAPI {
 	 * @return {Promise} Promise object with current track data
 	 */
 	get _currentTrack() {
-		if(this.$options._verbose) console.log("_currentTrack");
+		if(this.$options._verbose) console.log("get", "_currentTrack");
+
 		return new Promise((resolve, reject) => {
 			get("https://api.spotify.com/v1/me/player/currently-playing", {
 				params: {
@@ -106,6 +112,7 @@ class SpotifyAPI {
 				}
 			}).then(response => {
 				if(!AXIOS_OK_HTTP_STATUS_CODES.includes(response.status)) reject(new Error(`Wrong HTTP status code! [${response.status}]`));
+
 				resolve(Object.assign({
 					is_playing: response.status !== 204
 				}, response.data || null));
@@ -118,8 +125,10 @@ class SpotifyAPI {
 	 * @return {Promise} Promise object with current track data
 	 */
 	get currentTrack() {
-		if(this.$options._verbose) console.log("currentTrack");
+		if(this.$options._verbose) console.log("[get]", "currentTrack");
+
 		if(this._accessToken && this._accessTokenType && this._accessTokenExpiration && this._accessTokenExpiration > this._now) return this._currentTrack;
+
 		return new Promise((resolve, reject) => this._newAccessToken.then(() => resolve(this._currentTrack)).catch(reject));
 	}
 
@@ -128,6 +137,8 @@ class SpotifyAPI {
 	 * @returns {String} An ISO 3166-1 alpha-2 country code
 	 */
 	get market() {
+		if(this.$options._verbose) console.log("[get]", "market");
+
 		return this._market;
 	}
 
@@ -137,7 +148,10 @@ class SpotifyAPI {
 	 * @returns {String} An ISO 3166-1 alpha-2 country code
 	 */
 	set market(market = "") {
+		if(this.$options._verbose) console.log("[set]", "market");
+
 		if(!market || !/^[a-z]{2}$/i.test(market)) return;
+
 		return this._market = market.toUpperCase();
 	}
 

@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/l/spotify-current-track.svg?style=flat)](https://www.npmjs.com/package/spotify-current-track)
 [![paypal](https://img.shields.io/badge/donate-paypal-blue.svg?colorB=0070ba&style=flat)](https://paypal.me/oliverfindl)
 
-Simple wrapper for obtaining current track from [Spotify](https://www.spotify.com/) Web API.
+Simple wrapper class for obtaining current track from [Spotify](https://www.spotify.com/) Web API.
 
 ---
 
@@ -33,7 +33,7 @@ const spotify = new SpotifyAPI({
 	clientId: "<CLIENT_ID>",
 	clientSecret: "<CLIENT_SECRET>",
 	refreshToken: "<REFRESH_TOKEN>",
-	// [optional] override default request timeout, default value is 0 (no timeout)
+	// [optional] override default request timeout, defaults to 0 (no timeout)
 	_timeout: 1000 // milliseconds
 });
 
