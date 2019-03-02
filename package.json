@@ -27,7 +27,7 @@
 	"homepage": "https://github.com/oliverfindl/spotify-current-track#readme",
 	"dependencies": {
 		"axios": "^0.18.0",
-		"lodash": "^4.17.10",
-		"qs": "^6.5.2"
+		"lodash": "^4.17.11",
+		"qs": "^6.6.0"
 	}
 }
