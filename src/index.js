@@ -97,7 +97,7 @@ class SpotifyAPI {
 	 * @return {Promise} Promise object with current track data
 	 */
 	get _currentTrack() {
-		if(this.$options._verbose) console.log("get", "_currentTrack");
+		if(this.$options._verbose) console.log("[get]", "_currentTrack");
 
 		return new Promise((resolve, reject) => {
 			get("https://api.spotify.com/v1/me/player/currently-playing", {
