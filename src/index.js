@@ -1,5 +1,5 @@
 /**
- * spotify-current-track v1.2.1 (2018-09-15)
+ * spotify-current-track v1.2.2 (2019-03-02)
  * Copyright 2019 Oliver Findl
  * @license MIT
  */
